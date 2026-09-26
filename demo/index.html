@@ -302,7 +302,8 @@
       width: 100%;
       padding: 14px;
       border-radius: 12px;
-      background: linear-gradient(135deg, currentColor, currentColor);
+      background: rgba(20, 20, 50, 0.5);
+      border: 1.5px solid currentColor;
       color: #fff;
       font-size: 16px;
       font-weight: 600;
@@ -311,27 +312,14 @@
       transition: all 0.3s;
       position: relative;
       z-index: 1;
-      opacity: 0.9;
-      mix-blend-mode: screen;
+      text-shadow: 0 0 8px currentColor, 0 0 16px currentColor;
+      box-shadow: 0 0 12px currentColor, inset 0 0 12px rgba(255, 255, 255, 0.05);
     }
 
     .card:hover .card-btn {
-      opacity: 1;
-      box-shadow: 0 8px 24px currentColor;
+      background: rgba(20, 20, 50, 0.8);
+      box-shadow: 0 0 20px currentColor, 0 0 40px currentColor, inset 0 0 16px rgba(255, 255, 255, 0.08);
       transform: scale(1.05);
-    }
-
-    .card-btn-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: 12px;
-      background: #fff;
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: -1;
     }
 
     /* ===== 底部提示 ===== */
