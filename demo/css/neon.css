@@ -79,51 +79,23 @@ html, body {
 }
 
 .toplefttext-item {
-  background: transparent !important;
-  border: 1.5px solid transparent !important;
+  background-color: rgba(15, 15, 40, 0.9) !important;
+  border: 1px solid rgba(196, 77, 255, 0.35) !important;
   border-radius: 30px !important;
-  padding: 8px 20px !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
+  padding: 8px 22px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  line-height: 1.4 !important;
   color: #fff !important;
-  position: relative;
-  background-clip: padding-box !important;
-  letter-spacing: 2px;
-}
-
-.toplefttext-item::before {
-  content: '';
-  position: absolute;
-  top: -1.5px;
-  left: -1.5px;
-  right: -1.5px;
-  bottom: -1.5px;
-  border-radius: 30px;
-  background: linear-gradient(135deg, #ff6b9d, #c44dff, #4dd4ff);
-  z-index: -1;
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.5),
+    0 0 12px rgba(196, 77, 255, 0.6) !important;
   box-shadow:
-    0 0 15px rgba(196, 77, 255, 0.5),
-    0 0 30px rgba(255, 107, 157, 0.2);
-}
-
-.toplefttext-item::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 30px;
-  background: rgba(20, 20, 50, 0.6);
-  z-index: -1;
-}
-
-.toplefttext-item {
-  background: linear-gradient(135deg, #ff6b9d, #c44dff, #4dd4ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 6px rgba(196, 77, 255, 0.5));
+    0 0 0 1px rgba(255, 107, 157, 0.15),
+    0 0 10px rgba(196, 77, 255, 0.35),
+    0 0 20px rgba(255, 107, 157, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
 }
 
 .time {
@@ -173,6 +145,39 @@ html, body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  font-weight: 600;
+}
+
+/* 和弦信息显示 */
+.chord-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.chord-info-style {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ff6b9d;
+  text-shadow: 0 0 8px rgba(255, 107, 157, 0.5);
+  letter-spacing: 1px;
+}
+
+.chord-info-progression {
+  font-size: 12px;
+  font-weight: 600;
+  color: #c44dff;
+  text-shadow: 0 0 8px rgba(196, 77, 255, 0.5);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+}
+
+.chord-info-current {
+  font-size: 11px;
+  color: #4dd4ff;
+  text-shadow: 0 0 6px rgba(77, 212, 255, 0.5);
   font-weight: 600;
 }
 

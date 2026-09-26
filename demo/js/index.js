@@ -7,11 +7,7 @@ var audioContextReady = false;
 function unlockAudio() {
     if (audioContextReady) return;
     audioContextReady = true;
-    // 弹一个音测试
-    port.send([0x90, 60, 0x7f]); // 按下C4
-    setTimeout(function() {
-        port.send([0x80, 60, 0x40]); // 松开C4
-    }, 200);
+    // 静默解锁音频，不播放任何声音
     console.log('Audio unlocked! 音频已解锁');
     document.removeEventListener('click', unlockAudio);
     document.removeEventListener('keydown', unlockAudio);
@@ -268,6 +264,7 @@ function playNextDemoChord() {
 
     // 更新UI显示当前和弦名
     $('.toplefttext-item').html(chord.chord);
+    $('#chord_current').html('当前: ' + chord.chord);
 
     // 高亮琴键
     closelightFun();
@@ -486,6 +483,7 @@ function playSynthesizedMelody(quantizedNotes, bpm) {
         var chord = lightarr[currentBar];
         // 更新UI
         $('.toplefttext-item').html('🎵 ' + chord.chord);
+        $('#chord_current').html('回放: ' + chord.chord);
         // 高亮（黄色 = 伴奏）
         // 注意：不调用closelightFun，避免清除旋律的红色高亮
         chord.noteArray.forEach(function(note) {
@@ -711,6 +709,13 @@ function processChordData(res_data) {
     _audio.oncanplay = function () {
         musicTimeFun(playmid_url, _audio.duration, '#time', 'card')
     }
+
+    // 初始化和弦信息显示
+    var styleName = cardNumber == 1 ? '流行经典' : '小调忧伤';
+    var progressionName = getQueryVariable('name') || '';
+    $('#chord_style').html(styleName);
+    $('#chord_progression').html(progressionName.replace(/-/g, ' - '));
+    $('#chord_current').html('当前: ' + lightarr[0].chord);
 }
 
 let pagetimer1 = {};
@@ -1050,11 +1055,13 @@ function preTimeFun(){
 
         // 2小节准备时间（静音倒计时）
         showTimeBool = true;
-        $("#tip_dom").css({ display: 'flex' });
+        // 演示模式不显示"正在试听和弦"弹窗，只显示倒计时数字
+        $("#tip_dom").hide();
         $('.tip_modal').show();
 
         var firstChord = lightarr[0];
         $('.toplefttext-item').html('准备：' + firstChord.chord);
+        $('#chord_current').html('准备中…');
 
         var prepSeconds = Math.round(beatTime * 4 * 2); // 2小节准备时间
         var countdown = prepSeconds;

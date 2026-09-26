@@ -296,8 +296,12 @@
       font-size: 82px;
       font-weight: 900;
       color: #faad14;
-      z-index: 1;
+      z-index: 9999;
       display: none;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
     }
     /* 原生进度条修改 */
     progress {
@@ -449,7 +453,12 @@
           <div class="app-topright">
             <img class="toprightimg imgpng" src="./images/music.png" alt="" />
             <img class="toprightimg imggif" src="./images/musictwo.gif" alt="" style="display: none" />
-            <div class="progress progress-striped" style="display: inline-block; width: 80%">
+            <div class="chord-info" id="chord_info">
+              <div class="chord-info-style" id="chord_style">流行经典</div>
+              <div class="chord-info-progression" id="chord_progression">C - F - Am - G</div>
+              <div class="chord-info-current" id="chord_current">当前: —</div>
+            </div>
+            <div class="progress progress-striped" style="display: inline-block; width: 60%">
               <div class="progress-bar progress-bar-warning cardprogress" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <div class="time" id="time"></div>
