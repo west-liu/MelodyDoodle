@@ -1,0 +1,3 @@
+# C++ 引擎代码标记为 vendored，不参与语言统计
+# 这样 GitHub 首页显示 JavaScript/HTML 为主语言
+engine/cpp/** linguist-vendored
