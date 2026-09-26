@@ -93,6 +93,8 @@ Fork this repo, go to Settings → Pages, select `main` branch / root directory.
 - **Engine**: Professional MIDI processing engine in C++, based on midifile library
 - **Synthesis**: JZZ.js (browser) / FluidSynth (server)
 
+🔧 **C++ Engine** → [MidiEditer](https://github.com/west-liu/MidiEditer) — Quantization · Deduplication · Prolongation · Velocity
+
 Full architecture docs → [docs/architecture.md](docs/architecture.md)
 
 ### 📖 Story
