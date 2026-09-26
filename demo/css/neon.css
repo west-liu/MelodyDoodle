@@ -1,0 +1,529 @@
+/* ============================================================
+   音乐涂鸦 · 霓虹视觉升级
+   ============================================================ */
+
+/* ===== 背景 ===== */
+html, body {
+  background: #0a0a1a !important;
+}
+
+.appwrap {
+  background:
+    radial-gradient(ellipse at 30% 10%, rgba(120, 0, 255, 0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 90%, rgba(0, 200, 255, 0.2) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0a1a 0%, #151530 100%) !important;
+}
+
+#app {
+  background: transparent !important;
+}
+
+/* 背景网格 */
+#app::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== 顶部区域 ===== */
+.app-top {
+  position: relative;
+  z-index: 10;
+  padding: 20px 24px !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.app-topleft,
+.app-topright {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.app-topleft {
+  width: calc(28% - 12px) !important;
+  padding: 12px 16px !important;
+}
+
+.app-topright {
+  width: calc(72% - 12px) !important;
+  padding: 12px 20px !important;
+}
+
+.toplefttext-item {
+  background: linear-gradient(135deg, #ff6b9d, #c44dff) !important;
+  border-radius: 12px !important;
+  padding: 8px 16px !important;
+  font-size: 20px !important;
+  box-shadow: 0 4px 16px rgba(255, 107, 157, 0.4);
+}
+
+.time {
+  color: #fff !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* 进度条 */
+.progress {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  height: 12px !important;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #ff6b9d 0%, #c44dff 50%, #4dd4ff 100%) !important;
+  box-shadow: 0 0 10px rgba(196, 77, 255, 0.6);
+  transition: width 0.1s linear !important;
+}
+
+/* 播放按钮 */
+.trystartbox,
+.trystopbox {
+  filter: drop-shadow(0 2px 8px rgba(255, 107, 157, 0.5));
+  transition: transform 0.2s;
+}
+
+.trystartbox:hover,
+.trystopbox:hover {
+  transform: scale(1.1);
+}
+
+/* ===== 钢琴键盘 ===== */
+.apppianowrap {
+  height: 55% !important;
+  z-index: 5;
+}
+
+ul {
+  background: linear-gradient(180deg, #1a1a2e 0%, #0d0d1a 100%) !important;
+  padding: 8px 8px 12px 8px !important;
+  border-top: 2px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5), inset 0 2px 10px rgba(255, 255, 255, 0.05);
+}
+
+/* 白键 */
+li > div {
+  background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 100%) !important;
+  border: 2px solid #222 !important;
+  border-bottom-left-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+  box-shadow:
+    inset 0 -10px 0 #d0d0d0,
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    0 4px 8px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.08s ease;
+}
+
+/* 白键按下 */
+li > div.downwhitebox {
+  background: linear-gradient(180deg, #e0e0e0 0%, #d0d0d0 100%) !important;
+  box-shadow:
+    inset 0 -4px 0 #c0c0c0,
+    inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(2px);
+}
+
+/* 白键和弦高亮 */
+li > div.lightwhite {
+  background: linear-gradient(180deg, #fff3a0 0%, #ffd93d 100%) !important;
+  box-shadow:
+    inset 0 -10px 0 #f0c000,
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    0 0 30px rgba(255, 217, 61, 0.6) !important;
+}
+
+/* 白键旋律高亮（红色） */
+li > div.melodywhite {
+  background: linear-gradient(180deg, #ff8888 0%, #ff4444 100%) !important;
+  box-shadow:
+    inset 0 -10px 0 #e02020,
+    inset 0 2px 4px rgba(255, 255, 255, 0.4),
+    0 0 40px rgba(255, 68, 68, 0.8) !important;
+}
+
+/* 黑键 */
+li > p {
+  background: linear-gradient(180deg, #333 0%, #111 100%) !important;
+  border: 1px solid #000 !important;
+  border-bottom-left-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+  box-shadow:
+    inset 0 -8px 0 #1a1a1a,
+    inset 0 2px 2px rgba(255, 255, 255, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.6) !important;
+  transition: all 0.08s ease;
+}
+
+/* 黑键按下 */
+li > p.downblackbox {
+  background: linear-gradient(180deg, #222 0%, #0a0a0a 100%) !important;
+  box-shadow:
+    inset 0 -3px 0 #111,
+    inset 0 2px 2px rgba(0, 0, 0, 0.5) !important;
+  transform: translateY(2px);
+}
+
+/* 黑键和弦高亮 */
+li > p.lightblack {
+  background: linear-gradient(180deg, #ffcc33 0%, #ff9900 100%) !important;
+  box-shadow:
+    inset 0 -8px 0 #e07000,
+    inset 0 2px 2px rgba(255, 255, 255, 0.3),
+    0 0 25px rgba(255, 153, 0, 0.7) !important;
+}
+
+/* 黑键旋律高亮 */
+li > p.melodyblack {
+  background: linear-gradient(180deg, #ff6666 0%, #cc0000 100%) !important;
+  box-shadow:
+    inset 0 -8px 0 #990000,
+    inset 0 2px 2px rgba(255, 255, 255, 0.2),
+    0 0 30px rgba(255, 0, 0, 0.8) !important;
+}
+
+/* ===== 提示框（倒计时等） ===== */
+.tip_modal {
+  font-size: 72px !important;
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44dff 50%, #4dd4ff 100%);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+  filter: drop-shadow(0 0 30px rgba(196, 77, 255, 0.6));
+}
+
+/* ===== 加载框 ===== */
+.loadingbox {
+  background: rgba(10, 10, 26, 0.95) !important;
+  backdrop-filter: blur(20px);
+}
+
+.uploadingbox {
+  background: rgba(10, 10, 26, 0.7) !important;
+  backdrop-filter: blur(8px);
+}
+
+.uploadingcon,
+.trylistencon {
+  background: rgba(30, 30, 60, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.uploadingcontop3 {
+  color: #fff !important;
+  font-size: 28px !important;
+}
+
+.uploadingcontop1,
+.uploadingcontop2 {
+  color: #ff6b9d !important;
+}
+
+/* ===== 演示模式提示条 ===== */
+.demo-mode-tip {
+  background: linear-gradient(90deg, rgba(255, 107, 157, 0.2), rgba(196, 77, 255, 0.2)) !important;
+  color: #ffd93d !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  font-size: 14px !important;
+  text-shadow: 0 0 10px rgba(255, 217, 61, 0.5);
+}
+
+/* ===== 作品面板 ===== */
+.work-panel-overlay {
+  background: rgba(10, 10, 26, 0.85) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.work-panel {
+  background: rgba(20, 20, 50, 0.95) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 24px !important;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.6),
+    0 0 60px rgba(196, 77, 255, 0.15) !important;
+  text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.work-panel-title {
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44dff 50%, #4dd4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+/* 总分 */
+.work-total-score {
+  font-size: 72px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b9d 0%, #c44dff 50%, #4dd4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin: 16px 0 4px 0;
+  filter: drop-shadow(0 0 20px rgba(196, 77, 255, 0.5));
+}
+
+.work-score-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 20px;
+}
+
+/* 三项分数 */
+.work-scores {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.score-item {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 14px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.score-item-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 6px;
+}
+
+.score-item-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.score-item-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #ff6b9d, #c44dff, #4dd4ff) !important;
+  box-shadow: 0 0 8px currentColor;
+  transition: width 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* AI点评 */
+.ai-comment {
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.12), rgba(77, 212, 255, 0.12)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+  padding: 16px 20px !important;
+  margin: 20px 0 !important;
+  font-size: 15px !important;
+  color: #fff !important;
+  line-height: 1.6 !important;
+  position: relative;
+}
+
+.ai-comment::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff6b9d, #c44dff, #4dd4ff);
+  opacity: 0.15;
+  z-index: -1;
+  filter: blur(20px);
+}
+
+/* 成就 */
+.achievement-box {
+  margin: 16px 0;
+}
+
+.achievement-title {
+  font-size: 13px;
+  color: #ffd93d;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px rgba(255, 217, 61, 0.5);
+}
+
+.achievement-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.achievement-list > div {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.15)) !important;
+  border: 1px solid rgba(255, 215, 0, 0.3) !important;
+  border-radius: 12px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  color: #ffd93d !important;
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.2) !important;
+  animation: achievementPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes achievementPop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* 统计信息 */
+.work-stats {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 12px 0;
+}
+
+/* 按钮区 */
+.work-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  justify-content: center;
+}
+
+.work-btn {
+  padding: 12px 24px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  letter-spacing: 1px;
+  color: #fff;
+  user-select: none;
+}
+
+.work-btn-primary {
+  background: linear-gradient(135deg, #ff6b9d, #c44dff);
+  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+}
+
+.work-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 107, 157, 0.5);
+}
+
+.work-btn-primary:active {
+  transform: translateY(0);
+}
+
+.work-btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.work-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* 分享弹窗 */
+.share-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 26, 0.9);
+  backdrop-filter: blur(16px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.share-modal-content {
+  text-align: center;
+}
+
+.share-canvas-container {
+  margin-bottom: 20px;
+}
+
+.share-img {
+  max-width: 80%;
+  max-height: 65vh;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(196, 77, 255, 0.3);
+}
+
+.share-tip {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.share-close-btn {
+  display: inline-block;
+  padding: 10px 32px;
+}
+
+/* 顶部按钮图片隐藏（替换为CSS样式） */
+.trystartbox img,
+.trystopbox img {
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 8px rgba(255, 107, 157, 0.4));
+}
+
+/* ===== 隐藏旧元素 ===== */
+.toplefttext > img,
+.toprightimg,
+.leftimgbox,
+.titlebox {
+  display: none !important;
+}
+
+/* ===== 响应式微调 ===== */
+@media screen and (max-width: 768px) {
+  .tip_modal {
+    font-size: 48px !important;
+  }
+
+  .toplefttext-item {
+    font-size: 16px !important;
+    padding: 6px 12px !important;
+  }
+
+  .time {
+    font-size: 14px !important;
+  }
+}

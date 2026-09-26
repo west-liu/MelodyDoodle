@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>音乐涂鸦 · 创作你的旋律</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/neon.css" />
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .appwrap {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    #app {
+      width: 100%;
+      height: 100%;
+      background: #f6ffed;
+      position: relative;
+    }
+    .app-top {
+      width: calc(100% -16px);
+      margin: 13px 8px 13px 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .app-topleft {
+      width: calc(30% - 8px);
+      border: 2px solid #faad14;
+      background: #f7f7d5;
+      word-wrap: break-word;
+      border-radius: 10px;
+    }
+    .app-topright {
+      width: calc(70% - 8px);
+      border: 2px solid #faad14;
+      background: #f7f7d5;
+      border-radius: 10px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0 15px;
+    }
+    .apppianowrap {
+      width: 100%;
+      height: 60%;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+    }
+    ul {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      padding-bottom: 4px;
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+    }
+    li {
+      list-style-type: none;
+      position: relative;
+      height: 100%;
+      width: 6.67%;
+    }
+    li > div {
+      height: 100%;
+      width: 100%;
+      background: #ffffff;
+      border: 4px solid #000;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      box-sizing: border-box;
+      box-shadow: inset 0 -8px 0 #eeebeb;
+    }
+    li:not(:last-child) > div {
+      border-right: none;
+    }
+    li > p {
+      height: 60%;
+      width: 80%;
+      border-bottom-left-radius: 5.5px;
+      border-bottom-right-radius: 5.5px;
+      position: absolute;
+      top: 0;
+      left: 65%;
+      z-index: 999;
+      background: url(./images/black.png);
+      background-size: 100% 100%;
+    }
+    .downwhitebox {
+      background: url(./images/whitedown.png);
+      background-size: 100% 100%;
+      height: calc(100% - 10px);
+    }
+    .downblackbox {
+      background: url(./images/blackdown.png);
+      background-size: 100% 100%;
+      height: calc(60% - 10px);
+    }
+    .lightwhite {
+      background: url(./images/lightwhite.png);
+      background-size: 100% 100%;
+    }
+    .lightblack {
+      background: url(./images/lightblack.png);
+      background-size: 100% 100%;
+    }
+    /* 旋律高亮（红色，用户创作的部分） */
+    .melodywhite {
+      background: #ff4444 !important;
+      box-shadow: inset 0 0 20px rgba(255,68,68,0.5);
+    }
+    .melodyblack {
+      background: #ff4444 !important;
+      box-shadow: inset 0 0 15px rgba(255,68,68,0.6);
+    }
+
+    .toplefttext {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .toplefttext > img {
+      width: 102px;
+      height: 104px;
+      margin-right: 10px;
+    }
+    .leftimgbox {
+      width: 28px;
+      height: 28px;
+    }
+    .toplefttext-item {
+      background: #faad14;
+      color: #ffffff;
+      word-wrap: break-word;
+      border-radius: 20px;
+      padding: 10px;
+      box-sizing: border-box;
+      font-size: 32px;
+    }
+    .progress {
+      margin-bottom: 0;
+      border-radius: 15px;
+      margin-left: 10px;
+      background: #e5e7ca;
+    }
+    .time {
+      font-size: 20px;
+      color: #faad14;
+      font-weight: 600;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+    .toprightimg {
+      width: 148px;
+      height: 134px;
+    }
+    .loadingbox {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 99;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #fff;
+    }
+    .uploadingbox {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: rgba(0, 0, 0, 0.15);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .uploadingcon,
+    .trylistencon {
+      width: 47%;
+      height: 52%;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 15px;
+    }
+    .uploadingcontop > img {
+      width: 37px;
+      height: 37px;
+    }
+    .uploadingboximg {
+      width: 121px;
+      height: 111px;
+    }
+    .uploadingcontop {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .uploadingcontop3 {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #faad14;
+      font-weight: 700;
+      font-size: 24px;
+    }
+    .uploadingcontop1 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: #faad14;
+      font-weight: bold;
+      line-height: 22px;
+    }
+    .uploadingcontop2 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      color: #faad14;
+      font-weight: bold;
+    }
+    .trystartbox,
+    .trystopbox {
+      width: 40px;
+      height: 40px;
+      margin-left: 10px;
+    }
+
+    .progressbox {
+      background: #edeef1;
+      height: 20px;
+    }
+    .uploadprogress {
+      width: 100%;
+      height: 20px;
+    }
+    .progress-bar {
+      transition: none;
+    }
+
+    .titlebox {
+      width: 100%;
+      padding: 8px 8px 0px 8px;
+    }
+    .titleboxcon {
+      border: 2px solid #faad14;
+      background: #f7f7d5;
+      border-radius: 5px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 5px;
+    }
+    .titleboxfont {
+      margin-left: 5px;
+      color: #faad14;
+      font-weight: bold;
+    }
+    #tip_dom {
+      display: none;
+    }
+    #uploaddom {
+      display: none;
+    }
+    /* 提示框 */
+    .tip_modal {
+      position: absolute;
+      top: 0;
+      text-align: center;
+      left: 0;
+      font-size: 82px;
+      font-weight: 900;
+      color: #faad14;
+      z-index: 1;
+      display: none;
+    }
+    /* 原生进度条修改 */
+    progress {
+      background: #f2f2f2;
+      border-radius: 10px;
+      color: #faad14;
+    }
+    /* 表示总长度背景色 */
+    progress::-webkit-progress-bar {
+      background: #f2f2f2;
+      border-radius: 10px;
+    }
+    /* 表示已完成进度背景色 */
+    progress::-webkit-progress-value {
+      background: linear-gradient(45deg, #fb3 25%, #58a 0, #58a 50%, #fb3 0, #fb3 75%, #58a 0);
+      border-radius: 10px;
+    }
+    progress::-moz-progress-bar {
+      background: linear-gradient(45deg, #fb3 25%, #58a 0, #58a 50%, #fb3 0, #fb3 75%, #58a 0);
+      border-radius: 10px;
+    }
+    @media screen and (max-width: 1025px){
+        .leftimgbox {
+            width: 20px;
+            height: 20px;
+        }
+        .toplefttext > img {
+            width: 51px;
+            height: 52px;
+        }
+        .toplefttext-item {
+            font-size: 14px;
+            padding: 8px;
+        }
+        .toprightimg {
+            width: 74px;
+            height: 67px;
+        }
+        .switch > img {
+            width: 40px;
+            height: 40px;
+        }
+        .time {
+            font-size: 14px;
+        }
+        .uploadingcontop > img {
+            width: 18px;
+            height: 18px;
+        }
+        .uploadingboximg {
+            width: 60px;
+            height: 55px;
+        }
+        .uploadhtml {
+            font-size: 12px;
+        }
+        .uploadprogress {
+            width: 100%;
+            height: 15px;
+        }
+        .progressbox {
+            height: 15px;
+        }
+        .trystartbox,
+        .trystopbox {
+            width: 24px;
+            height: 24px;
+            margin-left: 10px;
+        }
+    }
+    #uploaddom > .uploadingcon {
+      max-height: 300px;
+    }
+    .go_back {
+      padding: 4px 12px;
+      background: white;
+      border: 1px solid #faad14;
+      border-radius: 4px;
+      display: block;
+      box-sizing: border-box;
+      color: #faad14;
+      margin-top: 10px;
+    }
+    .firebox {
+      background: url('./images/fire1.png') no-repeat;
+      background-size: contain;
+      width: 160px;
+      height: 160px;
+      box-sizing: border-box;
+      background-clip: content-box;
+      border-radius: 100%;
+      position: absolute;
+      z-index: 99;
+      opacity: 0;
+    }
+
+    .fireboxactive {
+      animation: firing2 1.5s ease;
+      -webkit-animation: firing2 1.5s ease ;
+    }
+
+    @keyframes firing2 {
+      0%{ -webkit-transform: scale(0.5) translate(0); opacity:1; }
+      100%{ opacity: 0; -webkit-transform: scale(1); }
+    }
+  
+    @-webkit-keyframes firing2 {
+      0%{ -webkit-transform: scale(0.5) translate(0); opacity:1; }
+      100%{ opacity: 0; -webkit-transform:scale(1); }
+    }
+    .fireplaybox{
+      width: 100%;
+      height: 100%;
+    }
+    #shareiframe{
+      position: absolute;
+    }
+    .operatebtnbox{display: flex;justify-content: center;align-items: center;}
+    .auditionbox{
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .auditionform >label{
+      margin-right: 10px;
+    }
+    .auditionform >input{
+      display: inline-block;
+      padding-right: 10px;
+    }
+  </style>
+  <body>
+    <div class="appwrap">
+      <div class="tip_modal" id="tip_modal"></div>
+      <div id="app" style="display: none">
+        <div class="titlebox">
+          <div class="titleboxcon">
+            <img src="./images/back.png" alt="" class="leftimgbox" onclick="window.history.go(-1)" />
+            <div class="titleboxfont"></div>
+          </div>
+        </div>
+        <div class="app-top">
+          <div class="app-topleft">
+            <div class="toplefttext">
+              <img src="./images/piano.gif" alt="" />
+              <div class="toplefttext-item"></div>
+            </div>
+          </div>
+          <div class="app-topright">
+            <img class="toprightimg imgpng" src="./images/music.png" alt="" />
+            <img class="toprightimg imggif" src="./images/musictwo.gif" alt="" style="display: none" />
+            <div class="progress progress-striped" style="display: inline-block; width: 80%">
+              <div class="progress-bar progress-bar-warning cardprogress" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <div class="time" id="time"></div>
+            <div class="switch">
+              <img src="./images/stop.png" alt="" class="stop" />
+              <img src="./images/start.png" alt="" class="start" style="display: none" />
+            </div>
+          </div>
+        </div>
+        <div class="apppianowrap">
+          <ul class="apppiancon">
+            <li>
+              <div data-index="60" class="pianokey whitebox" data-key="C4"></div>
+              <p data-index="61" class="pianokey blackbox" data-key="C#4"></p>
+            </li>
+            <li>
+              <div data-index="62" class="pianokey whitebox" data-key="D4"></div>
+              <p data-index="63" class="pianokey blackbox" data-key="D#4"></p>
+            </li>
+            <li>
+              <div data-index="64" class="pianokey whitebox" data-key="E4"></div>
+            </li>
+            <li>
+              <div data-index="65" class="pianokey whitebox" data-key="F4"></div>
+              <p data-index="66" class="pianokey blackbox" data-key="F#4"></p>
+            </li>
+            <li>
+              <div data-index="67" class="pianokey whitebox" data-key="G4"></div>
+              <p data-index="68" class="pianokey blackbox" data-key="G#4"></p>
+            </li>
+            <li>
+              <div data-index="69" class="pianokey whitebox" data-key="A4"></div>
+              <p data-index="70" class="pianokey blackbox" data-key="A#4"></p>
+            </li>
+            <li>
+              <div data-index="71" class="pianokey whitebox" data-key="B4"></div>
+            </li>
+            <li>
+              <div data-index="72" class="pianokey whitebox" data-key="C5"></div>
+              <p data-index="73" class="pianokey blackbox" data-key="C#5"></p>
+            </li>
+            <li>
+              <div data-index="74" class="pianokey whitebox" data-key="D5"></div>
+              <p data-index="75" class="pianokey blackbox" data-key="D#5"></p>
+            </li>
+            <li>
+              <div data-index="76" class="pianokey whitebox" data-key="E5"></div>
+            </li>
+            <li>
+              <div data-index="77" class="pianokey whitebox" data-key="F5"></div>
+              <p data-index="78" class="pianokey blackbox" data-key="F#5"></p>
+            </li>
+            <li>
+              <div data-index="79" class="pianokey whitebox" data-key="G5"></div>
+              <p data-index="80" class="pianokey blackbox" data-key="G#5"></p>
+            </li>
+            <li>
+              <div data-index="81" class="pianokey whitebox" data-key="A5"></div>
+              <p data-index="82" class="pianokey blackbox" data-key="A#5"></p>
+            </li>
+            <li>
+              <div data-index="83" class="pianokey whitebox" data-key="B5"></div>
+            </li>
+            <li>
+              <div data-index="84" class="pianokey whitebox" data-key="C6"></div>
+              <p data-index="85" class="pianokey blackbox" data-key="C#6"></p>
+            </li>
+            <li>
+              <div data-index="86" class="pianokey whitebox" data-key="D6"></div>
+              <p data-index="87" class="pianokey blackbox" data-key="D#6"></p>
+            </li>
+            <li>
+              <div data-index="88" class="pianokey whitebox" data-key="E6"></div>
+            </li>
+            <li>
+              <div data-index="89" class="pianokey whitebox" data-key="F6"></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="loadingbox">
+        <img src="./images/loading.gif" alt="" style="width: 50px; height: 48px" />
+      </div>
+      <div class="uploadingbox" id="tip_dom">
+        <div class="uploadingcon" style="height: 24%; background: #f7f7d5; width: 30%">
+          <div class="uploadingcontop3">
+            <div style="margin-bottom: 10px">正在试听和弦</div>
+            <div>next: diy 曲谱</div>
+          </div>
+        </div>
+      </div>
+      <!-- 作品信息面板 -->
+      <div class="uploadingbox work-panel-overlay" id="result_dom" style="display:none;">
+        <div class="uploadingcon work-panel" style="height: auto; min-height: 70%; width: 85%; padding: 24px; box-sizing: border-box;">
+          <div class="work-panel-title">🎵 你的作品</div>
+
+          <!-- 总分大数字 -->
+          <div class="work-total-score" id="result_total">--</div>
+          <div class="work-score-label">AI 综合评分</div>
+
+          <!-- 三项分数 -->
+          <div class="work-scores">
+            <div class="score-item">
+              <div class="score-item-label">节奏感</div>
+              <div class="score-item-value" style="color: #ff9800;" id="result_rhythm">--</div>
+              <div class="score-item-bar">
+                <div class="score-bar-fill" id="rhythm_bar" style="width: 0%;"></div>
+              </div>
+            </div>
+            <div class="score-item">
+              <div class="score-item-label">创意度</div>
+              <div class="score-item-value" style="color: #c44dff;" id="result_creativity">--</div>
+              <div class="score-item-bar">
+                <div class="score-bar-fill" id="creativity_bar" style="width: 0%;"></div>
+              </div>
+            </div>
+            <div class="score-item">
+              <div class="score-item-label">和谐度</div>
+              <div class="score-item-value" style="color: #4dd4ff;" id="result_harmony">--</div>
+              <div class="score-item-bar">
+                <div class="score-bar-fill" id="harmony_bar" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI点评 -->
+          <div class="ai-comment" id="result_comment">
+            🎤 点评加载中...
+          </div>
+
+          <!-- 新解锁成就 -->
+          <div class="achievement-box" id="achievement_box" style="display: none;">
+            <div class="achievement-title">🏆 解锁新成就！</div>
+            <div class="achievement-list" id="achievement_list"></div>
+          </div>
+
+          <!-- 作品数据 -->
+          <div class="work-stats" id="result_stats"></div>
+
+          <!-- 操作按钮 -->
+          <div class="work-actions">
+            <div class="work-btn work-btn-primary" id="result_share">📸 分享卡片</div>
+            <div class="work-btn work-btn-secondary" id="result_close">再玩一次</div>
+          </div>
+
+          <!-- 分享卡片弹窗 -->
+          <div class="share-modal" id="share_dom" style="display: none;">
+            <div class="share-modal-content">
+              <div class="share-canvas-container">
+                <img id="share_img" src="" class="share-img" />
+              </div>
+              <div class="share-tip">长按保存图片，分享给朋友</div>
+              <div class="work-btn work-btn-secondary share-close-btn" id="share_close">关闭</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <audio src="" controls="controls" id="audioPlay1" hidden='true'></audio>
+    <audio src="" controls="controls" id="audioPlay2" hidden='true'></audio>
+  </body>
+</html>
+<script src="./js/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="./js/JZZ.js"></script>
+    <script src="./js/JZZ.synth.Tiny.js"></script>
+    <script src="./js/game.js"></script>
+    <script src="./js/index.js?v=7"></script>
+<script>
+  (function () {
+    $("#uploaddom").hide();
+    $('#auditionwrap').hide()
+    $('#shareiframe').hide()
+
+    setTimeout(()=>{
+        $('.loadingbox').hide()
+    },1000)
+    
+    getchord();
+    let name = getQueryVariable("name"); // 获取卡片数字
+    $(".titleboxfont").html(name);
+    let clienttype = judgepageFun(); // 判断是移动端或pc端
+    if (clienttype == "pc") {
+      pcfunction();
+    } else if (clienttype == "mobile") {
+      mobilefunction();
+    }
+  })();
+</script>

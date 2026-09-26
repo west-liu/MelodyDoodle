@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>音乐涂鸦 · 零音乐基础也能创作</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    /* ===== 背景：深色渐变 + 动态光斑 ===== */
+    body {
+      background: #0a0a1a;
+      position: relative;
+    }
+
+    .bg-gradient {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(120, 0, 255, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(0, 200, 255, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 0, 150, 0.15) 0%, transparent 60%),
+        linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a1a2e 100%);
+      z-index: 0;
+    }
+
+    /* 背景网格线 */
+    .bg-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 60px 60px; }
+    }
+
+    /* 漂浮的音符粒子 */
+    .floating-notes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .note {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0;
+      animation: floatUp 8s ease-in-out infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(0deg) scale(0.5);
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) rotate(360deg) scale(1);
+      }
+    }
+
+    /* ===== 主容器 ===== */
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    /* ===== 标题区 ===== */
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-title {
+      font-size: 64px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44dff 50%, #4dd4ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      letter-spacing: 4px;
+      text-shadow: 0 0 80px rgba(196, 77, 255, 0.5);
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+
+    .hero-subtitle span {
+      color: #ff6b9d;
+      font-weight: 500;
+    }
+
+    /* ===== 卡片容器 ===== */
+    .cards-container {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== 毛玻璃卡片 ===== */
+    .card {
+      width: 280px;
+      height: 360px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 40px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(
+        from 0deg,
+        transparent,
+        transparent,
+        transparent,
+        currentColor
+      );
+      opacity: 0;
+      transition: opacity 0.3s;
+      animation: rotate 4s linear infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+
+    .card:hover::before {
+      opacity: 0.15;
+      animation-play-state: running;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 40px currentColor;
+    }
+
+    .card.card-1 {
+      color: #ff6b9d;
+    }
+
+    .card.card-2 {
+      color: #4dd4ff;
+    }
+
+    /* 卡片内的钢琴图标 */
+    .card-icon {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-icon::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.15;
+      filter: blur(20px);
+    }
+
+    .card-icon svg {
+      width: 64px;
+      height: 64px;
+      fill: currentColor;
+      filter: drop-shadow(0 0 10px currentColor);
+    }
+
+    /* 卡片信息 */
+    .card-info {
+      text-align: center;
+      z-index: 1;
+    }
+
+    .card-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .card-chord {
+      font-size: 14px;
+      color: currentColor;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px currentColor;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.6;
+    }
+
+    /* 开始按钮 */
+    .card-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, currentColor, currentColor);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 2px;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+      opacity: 0.9;
+      mix-blend-mode: screen;
+    }
+
+    .card:hover .card-btn {
+      opacity: 1;
+      box-shadow: 0 8px 24px currentColor;
+      transform: scale(1.05);
+    }
+
+    .card-btn-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 12px;
+      background: #fff;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: -1;
+    }
+
+    /* ===== 底部提示 ===== */
+    .footer-tip {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 12px;
+      letter-spacing: 1px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    /* ===== 响应式 ===== */
+    @media screen and (max-width: 768px) {
+      .hero-title {
+        font-size: 40px;
+      }
+
+      .hero-subtitle {
+        font-size: 14px;
+      }
+
+      .hero {
+        margin-bottom: 40px;
+      }
+
+      .cards-container {
+        gap: 20px;
+      }
+
+      .card {
+        width: 240px;
+        height: 320px;
+        padding: 30px 20px;
+      }
+
+      .card-icon {
+        width: 90px;
+        height: 90px;
+      }
+
+      .card-icon svg {
+        width: 48px;
+        height: 48px;
+      }
+    }
+
+    /* 横屏适配（移动端） */
+    @media screen and (orientation: portrait) and (max-width: 768px) {
+      #app {
+        position: absolute;
+        width: 100vh;
+        height: 100vw;
+        top: 0;
+        left: 100vw;
+        transform: rotate(90deg);
+        transform-origin: 0% 0%;
+      }
+    }
+  </style>
+
+  <body>
+    <!-- 背景层 -->
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+    <div class="floating-notes" id="floatingNotes"></div>
+
+    <!-- 主内容 -->
+    <div id="app">
+      <div class="hero">
+        <h1 class="hero-title">音乐涂鸦</h1>
+        <p class="hero-subtitle">零音乐基础 · <span>随便弹也好听</span> · 16秒创作你的歌</p>
+      </div>
+
+      <div class="cards-container">
+        <!-- 卡片1：C-F-Am-G -->
+        <div class="card card-1" data-card="1" data-name="C-F-Am-G">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zM9.5 15h2V8h-2v7zm-3 0h2V8h-2v7zm9 0h2V8h-2v7z"/>
+            </svg>
+          </div>
+          <div class="card-info">
+            <div class="card-name">流行经典</div>
+            <div class="card-chord">C - F - Am - G</div>
+            <div class="card-desc">卡农进行 · 温暖治愈<br>适合抒情流行曲风</div>
+          </div>
+          <div class="card-btn">开始创作</div>
+        </div>
+
+        <!-- 卡片2：Am-G-F-C -->
+        <div class="card card-2" data-card="2" data-name="Am-G-F-C">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+          </div>
+          <div class="card-info">
+            <div class="card-name">小调忧伤</div>
+            <div class="card-chord">Am - G - F - C</div>
+            <div class="card-desc">小调进行 · 深沉感性<br>适合抒情摇滚曲风</div>
+          </div>
+          <div class="card-btn">开始创作</div>
+        </div>
+      </div>
+
+      <div class="footer-tip">🎹 点击卡片开始你的音乐创作之旅</div>
+    </div>
+  </body>
+</html>
+
+<script src="./js/jquery-3.4.1.min.js"></script>
+<script>
+  // 生成漂浮音符
+  (function() {
+    var notes = ['♪', '♫', '♬', '♩', '🎵', '🎶'];
+    var colors = ['#ff6b9d', '#c44dff', '#4dd4ff', '#ffd93d'];
+    var container = document.getElementById('floatingNotes');
+    var count = 15;
+
+    for (var i = 0; i < count; i++) {
+      var note = document.createElement('div');
+      note.className = 'note';
+      note.innerHTML = notes[Math.floor(Math.random() * notes.length)];
+      note.style.left = Math.random() * 100 + '%';
+      note.style.color = colors[Math.floor(Math.random() * colors.length)];
+      note.style.animationDelay = Math.random() * 8 + 's';
+      note.style.animationDuration = (6 + Math.random() * 6) + 's';
+      note.style.fontSize = (16 + Math.random() * 20) + 'px';
+      container.appendChild(note);
+    }
+  })();
+
+  // 卡片点击
+  $('.card').on('click', function() {
+    var cardNumber = $(this).data('card');
+    var name = $(this).data('name');
+    window.location.href = './piano.html?cardNumber=' + cardNumber + '&name=' + encodeURIComponent(name);
+  });
+</script>
